@@ -23,9 +23,11 @@ const Message = mongoose.model('Message', {
 });
 
 // API routes
-app.get('/api/messages', async (req, res) => {
+app.get('/api/messages', authenticate, async (req, res) => {
   try {
-    const messages = await Message.find().sort({ timestamp: 1 });
+    const messages = await Message.find()
+      .sort({ timestamp: 1 })
+      .populate('user', 'username _id'); // Ensure user is populated
     res.json(messages);
   } catch (err) {
     res.status(500).json({ error: err.message });
